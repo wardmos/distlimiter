@@ -41,6 +41,12 @@ var (
 
 	//go:embed lua/token_bucket.lua
 	tokenBucketBody string
+
+	//go:embed lua/gcra.lua
+	gcraBody string
+
+	//go:embed lua/leaky_bucket.lua
+	leakyBucketBody string
 )
 
 // buildScript prepends the shared prelude to an algorithm body.
@@ -48,4 +54,8 @@ func buildScript(body string) string {
 	return preludeSrc + "\n" + body
 }
 
-var tokenBucketSrc = buildScript(tokenBucketBody)
+var (
+	tokenBucketSrc = buildScript(tokenBucketBody)
+	gcraSrc        = buildScript(gcraBody)
+	leakyBucketSrc = buildScript(leakyBucketBody)
+)
