@@ -50,6 +50,9 @@ var (
 
 	//go:embed lua/fixed_window.lua
 	fixedWindowBody string
+
+	//go:embed lua/sliding_log.lua
+	slidingLogBody string
 )
 
 // buildScript prepends the shared prelude to an algorithm body.
@@ -62,4 +65,5 @@ var (
 	gcraSrc        = buildScript(gcraBody)
 	leakyBucketSrc = buildScript(leakyBucketBody)
 	fixedWindowSrc = buildScript(fixedWindowBody)
+	slidingLogSrc  = buildScript(slidingLogBody)
 )
