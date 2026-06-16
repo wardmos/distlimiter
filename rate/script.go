@@ -47,6 +47,9 @@ var (
 
 	//go:embed lua/leaky_bucket.lua
 	leakyBucketBody string
+
+	//go:embed lua/fixed_window.lua
+	fixedWindowBody string
 )
 
 // buildScript prepends the shared prelude to an algorithm body.
@@ -58,4 +61,5 @@ var (
 	tokenBucketSrc = buildScript(tokenBucketBody)
 	gcraSrc        = buildScript(gcraBody)
 	leakyBucketSrc = buildScript(leakyBucketBody)
+	fixedWindowSrc = buildScript(fixedWindowBody)
 )

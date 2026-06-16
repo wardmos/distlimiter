@@ -1,6 +1,11 @@
 package rate
 
-import "strconv"
+import (
+	"fmt"
+	"math"
+	"strconv"
+	"time"
+)
 
 // Algorithm is a rate-limiting algorithm config value: TokenBucket, LeakyBucket,
 // FixedWindow, SlidingWindowLog, SlidingWindowCounter, or GCRA. It is passed to
@@ -38,7 +43,7 @@ type Algorithm interface {
 // reserveResult is the decoded return of a reserveN call.
 type reserveResult struct {
 	ok        bool
-	wait      int64  // micros until admission
+	wait      int64 // micros until admission
 	remaining float64
 	cancelTok string
 }
@@ -58,6 +63,48 @@ func parseRate(s string) Limit {
 func parseInt(s string) (int, error) {
 	n, err := strconv.ParseInt(s, 10, 64)
 	return int(n), err
+}
+
+// Shared helpers for the window algorithms (FixedWindow, SlidingWindowLog,
+// SlidingWindowCounter), which are all configured by (Limit, Window).
+
+// windowSetLimitFields maps SetLimit(r events/sec) onto the window's limit,
+// keeping Window fixed. Approximate for window algorithms (DESIGN sec 13.1).
+func windowSetLimitFields(r Limit, window time.Duration) []any {
+	return []any{"limit", int(math.Round(float64(r) * window.Seconds()))}
+}
+
+// decodeWindowConfig reads (limit, window) from the cfg hash, falling back to
+// the construction seed, and reports them as (Limit events/sec, Burst=limit).
+func decodeWindowConfig(stored map[string]string, seedLimit int, seedWindow time.Duration) (Limit, int) {
+	limit := seedLimit
+	window := seedWindow
+	if v, ok := stored["limit"]; ok {
+		if n, err := parseInt(v); err == nil {
+			limit = n
+		}
+	}
+	if v, ok := stored["window"]; ok {
+		if n, err := parseInt(v); err == nil {
+			window = time.Duration(n) * time.Microsecond
+		}
+	}
+	var rate Limit
+	if sec := window.Seconds(); sec > 0 {
+		rate = Limit(float64(limit) / sec)
+	}
+	return rate, limit
+}
+
+// validateWindow checks shared (Limit, Window) constraints.
+func validateWindow(name string, limit int, window time.Duration) error {
+	if limit < 0 {
+		return fmt.Errorf("rate: %s.Limit must be >= 0, got %d", name, limit)
+	}
+	if window <= 0 {
+		return fmt.Errorf("rate: %s.Window must be > 0, got %v", name, window)
+	}
+	return nil
 }
 
 // Decoders for go-redis Lua return values, which arrive as int64, string, or
