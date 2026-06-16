@@ -53,6 +53,9 @@ var (
 
 	//go:embed lua/sliding_log.lua
 	slidingLogBody string
+
+	//go:embed lua/sliding_counter.lua
+	slidingCounterBody string
 )
 
 // buildScript prepends the shared prelude to an algorithm body.
@@ -61,9 +64,10 @@ func buildScript(body string) string {
 }
 
 var (
-	tokenBucketSrc = buildScript(tokenBucketBody)
-	gcraSrc        = buildScript(gcraBody)
-	leakyBucketSrc = buildScript(leakyBucketBody)
-	fixedWindowSrc = buildScript(fixedWindowBody)
-	slidingLogSrc  = buildScript(slidingLogBody)
+	tokenBucketSrc    = buildScript(tokenBucketBody)
+	gcraSrc           = buildScript(gcraBody)
+	leakyBucketSrc    = buildScript(leakyBucketBody)
+	fixedWindowSrc    = buildScript(fixedWindowBody)
+	slidingLogSrc     = buildScript(slidingLogBody)
+	slidingCounterSrc = buildScript(slidingCounterBody)
 )
