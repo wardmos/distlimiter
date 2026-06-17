@@ -248,10 +248,10 @@ func TestKeyValidation(t *testing.T) {
 	defer mr.Close()
 	rdb := redis.NewClient(&redis.Options{Addr: mr.Addr()})
 	cases := map[string]string{
-		"":          "empty",
-		"a b":       "whitespace",
-		"a\x00b":    "control",
-		"a{b":       "brace",
+		"":           "empty",
+		"a b":        "whitespace",
+		"a\x00b":     "control",
+		"a{b":        "brace",
 		"with}brace": "brace",
 	}
 	for key, name := range cases {
