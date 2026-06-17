@@ -367,6 +367,20 @@ func (l *Limiter) opCtx() (context.Context, context.CancelFunc) {
 	return l.opCtxFrom(l.opts.baseCtx)
 }
 
+// newTimeoutCtx derives an option-bounded context (used outside a *Limiter,
+// e.g. Store construction).
+func newTimeoutCtx(o options) (context.Context, context.CancelFunc) {
+	if o.timeout <= 0 {
+		return o.baseCtx, func() {}
+	}
+	return context.WithTimeout(o.baseCtx, o.timeout)
+}
+
+// wrapRedis wraps an underlying go-redis error under ErrRedis.
+func wrapRedis(op string, err error) error {
+	return fmt.Errorf("%w: %s: %v", ErrRedis, op, err)
+}
+
 func (l *Limiter) opCtxFrom(base context.Context) (context.Context, context.CancelFunc) {
 	if l.opts.timeout <= 0 {
 		return base, func() {}
