@@ -21,9 +21,9 @@ type options struct {
 	maxKeyLen int // <= 0 means unlimited
 	ttlMargin time.Duration
 
-	charWhitelist bool
-	customValidor func(string) error
-	disableKeyVal bool
+	charWhitelist   bool
+	customValidator func(string) error
+	disableKeyVal   bool
 
 	timeout    time.Duration // <= 0 disables the per-call deadline
 	baseCtx    context.Context
@@ -66,7 +66,7 @@ func WithKeyCharWhitelist() Option { return func(o *options) { o.charWhitelist =
 // WithKeyValidator installs a custom key validator, overriding the built-in
 // rules (advanced).
 func WithKeyValidator(fn func(string) error) Option {
-	return func(o *options) { o.customValidor = fn }
+	return func(o *options) { o.customValidator = fn }
 }
 
 // DisableKeyValidation turns off all key validation (trusted input only).

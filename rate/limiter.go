@@ -277,7 +277,7 @@ func (l *Limiter) TokensAt(_ time.Time) float64 {
 // Ping probes Redis connectivity.
 func (l *Limiter) Ping(ctx context.Context) error {
 	if err := l.rdb.Ping(ctx).Err(); err != nil {
-		return fmt.Errorf("%w: ping: %v", ErrRedis, err)
+		return wrapRedis("ping", err)
 	}
 	return nil
 }
@@ -300,7 +300,7 @@ func (l *Limiter) reserveN(ctx context.Context, op string, n int, maxWaitMicros 
 	args := l.scriptArgs(op, n, maxWaitMicros, cancelTok)
 	raw, err := l.scripter.runScript(ctx, l.algo.scriptSrc(), []string{l.kb.base}, args...)
 	if err != nil {
-		return reserveResult{}, fmt.Errorf("%w: %v", ErrRedis, err)
+		return reserveResult{}, wrapRedis("eval", err)
 	}
 	return decodeReserve(raw), nil
 }
@@ -346,7 +346,7 @@ func (l *Limiter) writeCfg(fields []any) error {
 	defer cancel()
 	cfgKey := l.kb.base + l.opts.sep + "cfg"
 	if err := l.rdb.HSet(ctx, cfgKey, fields...).Err(); err != nil {
-		return fmt.Errorf("%w: hset cfg: %v", ErrRedis, err)
+		return wrapRedis("hset cfg", err)
 	}
 	return nil
 }
@@ -357,7 +357,7 @@ func (l *Limiter) readConfig() (Limit, int) {
 	cfgKey := l.kb.base + l.opts.sep + "cfg"
 	stored, err := l.rdb.HGetAll(ctx, cfgKey).Result()
 	if err != nil {
-		l.reportErr(fmt.Errorf("%w: hgetall cfg: %v", ErrRedis, err))
+		l.reportErr(wrapRedis("hgetall cfg", err))
 		stored = nil
 	}
 	return l.algo.decodeConfig(stored)

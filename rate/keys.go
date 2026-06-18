@@ -11,8 +11,8 @@ func validateKey(key string, o *options) error {
 	if o.disableKeyVal {
 		return nil
 	}
-	if o.customValidor != nil {
-		return o.customValidor(key)
+	if o.customValidator != nil {
+		return o.customValidator(key)
 	}
 	if key == "" {
 		return ErrEmptyKey
