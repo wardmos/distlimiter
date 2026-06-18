@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math"
-	"math/rand/v2"
+	"math/rand"
 	"sync"
 	"time"
 
@@ -205,7 +205,7 @@ func (l *Limiter) waitBestEffort(ctx context.Context, n int) error {
 		if delay <= 0 {
 			delay = time.Millisecond
 		}
-		delay += time.Duration(rand.Int64N(int64(delay)/4 + 1)) // up to ~25% jitter
+		delay += time.Duration(rand.Int63n(int64(delay)/4 + 1)) // up to ~25% jitter
 		if deadline, ok := ctx.Deadline(); ok && time.Now().Add(delay).After(deadline) {
 			return fmt.Errorf("rate: WaitN(n=%d) would exceed context deadline", n)
 		}

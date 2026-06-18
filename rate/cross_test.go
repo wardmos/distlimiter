@@ -1,6 +1,7 @@
 package rate
 
 import (
+	"context"
 	"testing"
 	"time"
 )
@@ -95,7 +96,7 @@ func TestCrossZeroEventsAlwaysAllowed(t *testing.T) {
 				lim.Allow() // drain
 			}
 			// A zero-sized request is always permitted (mirrors x/time/rate).
-			if ok, err := lim.AllowNContext(t.Context(), time.Now(), 0); err != nil || !ok {
+			if ok, err := lim.AllowNContext(context.Background(), time.Now(), 0); err != nil || !ok {
 				t.Fatalf("AllowN(0) on a drained limiter: ok=%v err=%v, want true/nil", ok, err)
 			}
 		})

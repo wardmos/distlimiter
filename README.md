@@ -226,10 +226,12 @@ Known, intentional divergences:
 
 ## Requirements
 
-- **Go**: the module targets `go 1.24`.
+- **Go**: `1.21+`.
 - **Redis client**: [go-redis](https://github.com/redis/go-redis) **v9 only**.
-  The client is isolated behind a tiny internal interface, so adapting another
-  SDK is cheap — PRs welcome.
+  The minimum required release is `v9.18` (which keeps the Go floor at 1.21);
+  newer go-redis releases work too but may raise the Go requirement. The client
+  is isolated behind a tiny internal interface, so adapting another SDK is
+  cheap — PRs welcome.
 - **Redis server**: **6.0+**. The scripts use only widely-available commands
   (`EVAL`, `TIME`, ZSET, hashes, `INCRBY`/`DECR`, `PEXPIRE`); the floor is set by
   go-redis v9, not by the algorithms.
