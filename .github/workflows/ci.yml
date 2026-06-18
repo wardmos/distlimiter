@@ -66,6 +66,8 @@ jobs:
         with:
           go-version: '1.24'
           cache: true
-      - uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
+      # Install golangci-lint v2 directly (the .golangci.yml uses the v2 schema).
+      - name: install golangci-lint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v2.12.2
+      - name: run golangci-lint
+        run: "$(go env GOPATH)/bin/golangci-lint run --timeout 5m ./..."
