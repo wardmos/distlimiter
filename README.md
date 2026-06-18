@@ -7,7 +7,7 @@ identical to [`golang.org/x/time/rate`](https://pkg.go.dev/golang.org/x/time/rat
 Swap your construction call, keep every call site, and the limit is now enforced
 **globally across the fleet** instead of once per replica.
 
-> Tracks `golang.org/x/time/rate` **v0.11.0**: the usage interface (`Allow`,
+> Tracks `golang.org/x/time/rate` **v0.9.0**: the usage interface (`Allow`,
 > `Wait`, `Reserve`, ...) mirrors upstream exactly and is enforced in tests.
 
 ## When to use
