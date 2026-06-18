@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// validateKey enforces the rules in DESIGN.md sec 8.2. It runs once at
+// validateKey enforces the key rules. It runs once at
 // construction; the hot path never re-validates.
 func validateKey(key string, o *options) error {
 	if o.disableKeyVal {

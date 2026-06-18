@@ -11,7 +11,7 @@ import (
 
 // usageSurface is the x/time/rate usage interface that must hold identically for
 // our Limiter and the upstream *xrate.Limiter. If either drifts, the build
-// breaks (DESIGN sec 13.3). Reserve/ReserveN are excluded here because they
+// breaks. Reserve/ReserveN are excluded here because they
 // return each package's own *Reservation; they are covered by the reflection
 // test below.
 type usageSurface interface {
@@ -39,8 +39,7 @@ var (
 var documentedMissing = map[string]bool{}
 
 // TestUpstreamLimiterCoverage fails loudly when xrate.Limiter gains a method we
-// do not implement — the early-warning signal that upstream has moved
-// (DESIGN sec 13.3).
+// do not implement — the early-warning signal that upstream has moved.
 func TestUpstreamLimiterCoverage(t *testing.T) {
 	ours := reflect.TypeOf(&Limiter{})
 	up := reflect.TypeOf(&xrate.Limiter{})

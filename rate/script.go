@@ -9,7 +9,7 @@ import (
 )
 
 // scripter is the only way the core touches the Redis client: "run a script".
-// Binding to one SDK is cheap to undo later behind this interface (DESIGN sec 11).
+// Binding to one SDK is cheap to undo later behind this interface.
 type scripter interface {
 	runScript(ctx context.Context, src string, keys []string, args ...any) (any, error)
 }

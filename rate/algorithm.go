@@ -25,7 +25,7 @@ type Algorithm interface {
 	// used to seed the Redis-authoritative cfg hash on first use.
 	configArgs() []any
 	// setLimitFields / setBurstFields return cfg HSET field/value pairs for the
-	// Redis-authoritative SetLimit / SetBurst (DESIGN sec 4.3).
+	// Redis-authoritative SetLimit / SetBurst.
 	setLimitFields(Limit) []any
 	setBurstFields(int) []any
 	// decodeConfig maps the stored cfg hash to (Limit, Burst), falling back to
@@ -36,7 +36,7 @@ type Algorithm interface {
 	isInf() bool
 	// bestEffort reports whether Reserve/Wait/Cancel are best-effort (estimated
 	// delay, verify-and-retry Wait, no-op Cancel) rather than exact. Only
-	// SlidingWindowCounter returns true (DESIGN sec 5.1).
+	// SlidingWindowCounter returns true.
 	bestEffort() bool
 }
 
@@ -69,7 +69,7 @@ func parseInt(s string) (int, error) {
 // SlidingWindowCounter), which are all configured by (Limit, Window).
 
 // windowSetLimitFields maps SetLimit(r events/sec) onto the window's limit,
-// keeping Window fixed. Approximate for window algorithms (DESIGN sec 13.1).
+// keeping Window fixed. Approximate for window algorithms.
 func windowSetLimitFields(r Limit, window time.Duration) []any {
 	return []any{"limit", int(math.Round(float64(r) * window.Seconds()))}
 }

@@ -5,7 +5,7 @@ import "time"
 // SlidingWindowCounter approximates a sliding window using two fixed-window
 // counters weighted by overlap. It is memory-light (two integers) and avoids
 // the fixed-window boundary spike, but is best-effort: Reserve/Delay are
-// estimates and Cancel is a no-op (DESIGN sec 5.1).
+// estimates and Cancel is a no-op.
 type SlidingWindowCounter struct {
 	Limit  int
 	Window time.Duration

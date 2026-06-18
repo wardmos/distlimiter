@@ -1,7 +1,7 @@
 -- sliding_counter.lua: two-window weighted approximation of a sliding window.
 -- Memory-light (two counters) but best-effort: the estimate cannot hold an exact
 -- future slot, so Reserve returns an estimated delay and Cancel is a no-op
--- (DESIGN sec 5.1). State: counters at base:sep:c<idx>, idx = floor(now/window).
+-- State: counters at base:sep:c<idx>, idx = floor(now/window).
 -- Config seed: ARGV[8] = limit (int), ARGV[9] = window (micros).
 
 local base = KEYS[1]

@@ -36,7 +36,7 @@ func (r *Reservation) Delay() time.Duration { return r.DelayFrom(time.Now()) }
 
 // DelayFrom returns the duration the caller must wait, from t, before acting.
 // It returns InfDuration if the reservation is not OK. t is on the caller's
-// local clock; timeToAct was built as localNow+waitMicros (DESIGN sec 5.2), so
+// local clock; timeToAct was built as localNow+waitMicros, so
 // no server clock leaks in.
 func (r *Reservation) DelayFrom(t time.Time) time.Duration {
 	if r == nil || !r.ok {

@@ -7,7 +7,7 @@ import (
 
 // allAlgorithms returns one config per algorithm, each tuned to "5 events per
 // unit" so a single set of cases can run against all of them through the shared
-// interface (DESIGN sec 9).
+// interface.
 func allAlgorithms() []struct {
 	name string
 	algo Algorithm

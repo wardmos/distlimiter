@@ -1,6 +1,6 @@
 -- prelude.lua: shared helpers prepended to every algorithm script.
 --
--- Wire contract (see DESIGN.md sec 5.3):
+-- Wire contract:
 --   KEYS[1] = base storage key, hash-tag wrapped, e.g. "ratelimit:{user:42}".
 --             All sub-keys (cfg, window counters) are derived from it in Lua so
 --             they share the Cluster slot; never built on the Go side.
@@ -34,7 +34,7 @@ local function dl_sub(base, sep, name)
 end
 
 -- dl_cfg_num returns cfg[field] as a number, seeding it from `seed` if absent
--- (Redis-authoritative config with construction-config baseline, DESIGN sec 4.3).
+-- (Redis-authoritative config with construction-config baseline).
 -- Each field is seeded independently so a partial cfg (e.g. after SetLimit wrote
 -- only one field) is reconciled.
 local function dl_cfg_num(cfgkey, field, seed)

@@ -19,7 +19,7 @@ func (c *testClock) add(d time.Duration) { c.micros.Add(d.Microseconds()) }
 func (c *testClock) now() int64          { return c.micros.Load() }
 
 // newTestLimiter wires a limiter to a fresh miniredis with an injected clock so
-// the algorithm math is fully controlled (DESIGN sec 9: miniredis FastForward
+// the algorithm math is fully controlled (miniredis FastForward
 // does not drive redis TIME).
 func newTestLimiter(t testing.TB, algo Algorithm, opts ...Option) (*Limiter, *testClock, *miniredis.Miniredis) {
 	t.Helper()

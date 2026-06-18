@@ -4,7 +4,7 @@
 -- Config seed: ARGV[8] = limit (int), ARGV[9] = window (micros).
 --
 -- A request that cannot be admitted now books an exact future slot by ZADDing a
--- member scored at the time an older entry expires (DESIGN sec 5.1); that member
+-- member scored at the time an older entry expires; that member
 -- counts toward the window until it expires, holding the slot. Cancel ZREMs it.
 
 local base = KEYS[1]

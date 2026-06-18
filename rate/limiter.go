@@ -135,7 +135,7 @@ func (l *Limiter) ReserveN(_ time.Time, n int) *Reservation {
 	}
 	r := &Reservation{ok: res.ok, tokens: n, lim: l, cancelTok: res.cancelTok}
 	if res.ok {
-		// timeToAct = localNow + waitMicros (DESIGN sec 5.2).
+		// timeToAct = localNow + waitMicros.
 		r.timeToAct = time.Now().Add(time.Duration(res.wait) * time.Microsecond)
 	}
 	return r
@@ -220,7 +220,7 @@ func (l *Limiter) waitBestEffort(ctx context.Context, n int) error {
 }
 
 // SetLimit sets the limit (events/sec). It writes through to the Redis cfg hash
-// (the authoritative store, DESIGN sec 4.3); a write failure surfaces via the
+// (the authoritative store); a write failure surfaces via the
 // error handler.
 func (l *Limiter) SetLimit(newLimit Limit) { l.SetLimitAt(time.Now(), newLimit) }
 
@@ -291,7 +291,7 @@ func (l *Limiter) LastErr() error {
 
 // --- internals -----------------------------------------------------------
 
-// unboundedWait is the maxWait sentinel for Reserve (DESIGN sec 5.3).
+// unboundedWait is the maxWait sentinel for Reserve.
 const unboundedWait int64 = -1
 
 // reserveN runs the algorithm script. maxWaitMicros is 0 for Allow, the actual

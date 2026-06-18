@@ -16,7 +16,7 @@ import (
 // These tests run against a real Redis (REDIS_ADDR, default localhost:6379) and
 // are gated behind the `integration` build tag, so they do not run in the
 // default `go test` pass. They verify the behaviors miniredis cannot fully
-// guarantee (DESIGN sec 9): the redis.call('TIME') clock path, server-side
+// guarantee: the redis.call('TIME') clock path, server-side
 // atomicity under concurrency, and TTL reclamation.
 
 func realRedis(t *testing.T) *redis.Client {

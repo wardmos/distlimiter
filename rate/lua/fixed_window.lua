@@ -3,7 +3,7 @@
 -- Config seed: ARGV[8] = limit (int), ARGV[9] = window (micros).
 --
 -- Reserve holds an exact future slot by incrementing the earliest future window
--- with room (DESIGN sec 5.1); Allow (maxWait=0) only ever touches the current
+-- with room; Allow (maxWait=0) only ever touches the current
 -- window.
 
 local base = KEYS[1]
