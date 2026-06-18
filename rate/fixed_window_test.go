@@ -58,6 +58,44 @@ func TestFixedWindowReserveFutureSlot(t *testing.T) {
 	}
 }
 
+func TestFixedWindowCancelNoOrphanKey(t *testing.T) {
+	lim, clk, mr := newTestLimiter(t, FixedWindow{Limit: 5, Window: time.Second})
+	clk.set(10 * time.Second)
+	r := lim.ReserveN(time.Now(), 2)
+	if !r.OK() {
+		t.Fatal("Reserve(2): want OK")
+	}
+	wkey := lim.kb.base + ":w10"
+	if !mr.Exists(wkey) {
+		t.Fatalf("window key %q should exist after reserve", wkey)
+	}
+	if ttl := mr.TTL(wkey); ttl <= 0 {
+		t.Fatalf("window key TTL = %v, want > 0 after reserve", ttl)
+	}
+	r.Cancel() // counter back to 0 -> key dropped, no TTL-less orphan
+	if mr.Exists(wkey) {
+		t.Fatalf("window key %q should be gone after full cancel (no orphan)", wkey)
+	}
+}
+
+func TestFixedWindowCancelKeepsTTL(t *testing.T) {
+	lim, clk, mr := newTestLimiter(t, FixedWindow{Limit: 5, Window: time.Second})
+	clk.set(10 * time.Second)
+	lim.AllowN(time.Now(), 2) // count = 2
+	r := lim.ReserveN(time.Now(), 1)
+	if !r.OK() {
+		t.Fatal("Reserve(1): want OK")
+	}
+	wkey := lim.kb.base + ":w10"
+	r.Cancel() // count 3 -> 2, key survives with its TTL intact
+	if !mr.Exists(wkey) {
+		t.Fatalf("window key %q should still exist (count 2)", wkey)
+	}
+	if ttl := mr.TTL(wkey); ttl <= 0 {
+		t.Fatalf("window key TTL = %v, want > 0 (not cleared by cancel)", ttl)
+	}
+}
+
 func TestFixedWindowReserveCancel(t *testing.T) {
 	lim, clk, _ := newTestLimiter(t, FixedWindow{Limit: 5, Window: time.Second})
 	clk.set(10 * time.Second)

@@ -30,12 +30,16 @@ end
 local curIdx = math.floor(now / window)
 
 if op == 'cancel' then
-    -- cancelTok = the window index that was incremented.
+    -- cancelTok = the absolute window index that was incremented at reserve time
+    -- (independent of the current clock). If that window has already been
+    -- reclaimed its reservation is moot, so skip it rather than resurrecting a
+    -- TTL-less orphan key.
     local idx = tonumber(cancelTok)
-    if idx ~= nil then
+    if idx ~= nil and redis.call('EXISTS', wkey(idx)) == 1 then
         local k = wkey(idx)
-        local c = redis.call('DECRBY', k, n)
-        if c < 0 then redis.call('SET', k, '0') end
+        if redis.call('DECRBY', k, n) <= 0 then
+            redis.call('DEL', k)    -- empty: drop it (avoids a TTL-less orphan)
+        end
     end
     return {1}
 end
